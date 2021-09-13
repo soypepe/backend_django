@@ -1,8 +1,8 @@
 from django.shortcuts import render
-from django.http import JsonResponse
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework import status
 from .models import Cliente
 from .serializador import ClienteSerializador
 
@@ -19,33 +19,47 @@ def apiResumen(request):
 
 @api_view(['get'])
 def clientesLista(request):
-  clientes=Cliente.objects.all()
-  serializador = ClienteSerializador(clientes, many=True)
-  return Response(serializador.data)
+  try:
+    clientes=Cliente.objects.all()
+    serializador = ClienteSerializador(clientes, many=True)
+    return Response({'datos':serializador.data, 'estado':200},status=status.HTTP_200_OK)
+  except:
+    return Response({'mensaje':'No se puede mostrar los clientes', 'estado':404}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['get'])
 def clienteDetalle(request,pk):
-  clientes=Cliente.objects.get(id=pk)
-  serializador = ClienteSerializador(clientes, many=False)
-  return Response(serializador.data)
+  try:
+    cliente=Cliente.objects.get(id=pk)
+    serializador = ClienteSerializador(cliente, many=False)
+    return Response({"datos":serializador.data, "estado":200}, status=status.HTTP_200_OK)
+  except:
+    return Response({"mensaje":'Cliente no encontrado', "estado":404}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['post'])
 def clienteCrear(request):
   serializador = ClienteSerializador(data=request.data)
   if serializador.is_valid():
     serializador.save()
-  return Response(serializador.data)
+    return Response({"datos":serializador.data, "estado":200}, status=status.HTTP_201_CREATED)
+  else:
+    return Response({'datos':'hubo un error','estado':404}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['put'])
 def clienteActualizar(request,pk):
-  cliente=Cliente.objects.get(id=pk)
-  serializador = ClienteSerializador(instance=cliente, data=request.data)
-  if serializador.is_valid():
-    serializador.save()
-  return Response(serializador.data)
+  try:
+    cliente=Cliente.objects.get(id=pk)
+    serializador = ClienteSerializador(instance=cliente, data=request.data)
+    if serializador.is_valid():
+      serializador.save()
+      return Response({'datos':serializador.data,'estado':200}, status=status.HTTP_200_OK)
+  except:
+    return Response({'mensaje':'Cliente no encontrado', 'estado':404}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['delete'])
 def clienteBorrar(request,pk):
-  cliente=Cliente.objects.get(id=pk)
-  cliente.delete()
-  return Response('Borrado correctamente')
+  try:
+    cliente=Cliente.objects.get(id=pk)
+    cliente.delete()
+    return Response({'mensaje':'Borrado correctamente', 'estado':200}, status=status.HTTP_200_OK)
+  except:
+    return Response({'mensaje':'Cliente no encontrado', 'estado':404}, status=status.HTTP_404_NOT_FOUND)

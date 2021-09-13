@@ -1,4 +1,8 @@
+
 GET http://127.0.0.1:8000/api/clientes-lista
+
+###
+GET http://127.0.0.1:8000/api/cliente-detalle/1
 
 ###
 put http://127.0.0.1:8000/api/cliente-actualizar/1
@@ -23,4 +27,4 @@ content-type: application/json
 }
 
 ###
-delete http://127.0.0.1:8000/api/cliente-borrar/4
+delete http://127.0.0.1:8000/api/cliente-borrar/9
