@@ -1,0 +1,26 @@
+GET http://127.0.0.1:8000/api/clientes-lista
+
+###
+put http://127.0.0.1:8000/api/cliente-actualizar/1
+content-type: application/json
+
+{
+    "nombre": "barbara gordon 2",
+    "direccion": "gotica #2222",
+    "telefono": "1231111",
+    "ci": "1112222"
+}
+
+###
+post http://127.0.0.1:8000/api/cliente-crear
+content-type: application/json
+
+{
+    "nombre": "barbara gordon 3",
+    "direccion": "gotica #21",
+    "telefono": "1231111",
+    "ci": "1112222"
+}
+
+###
+delete http://127.0.0.1:8000/api/cliente-borrar/4
